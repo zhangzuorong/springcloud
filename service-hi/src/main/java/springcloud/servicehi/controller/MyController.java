@@ -1,5 +1,7 @@
 package springcloud.servicehi.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class MyController {
+    private static Logger log = LoggerFactory.getLogger(MyController.class);
     @Value("${server.port}")
     String port;
 
     @RequestMapping("/hi")
     public String home(@RequestParam(value = "name", defaultValue = "forezp") String name) {
         String str =  "hi " + name + " ,i am from port:" + port;
-        System.out.println(str);
+        log.info(str);
         return  str;
     }
 }
