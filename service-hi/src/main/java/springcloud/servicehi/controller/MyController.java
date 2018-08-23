@@ -22,6 +22,8 @@ public class MyController {
 
     @RequestMapping("/hi")
     public String home(@RequestParam(value = "name", defaultValue = "forezp") String name) {
-        return "hi " + name + " ,i am from port:" + port;
+        String str =  "hi " + name + " ,i am from port:" + port;
+        System.out.println(str);
+        return  str;
     }
 }
