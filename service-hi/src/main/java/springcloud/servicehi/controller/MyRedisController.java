@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import springcloud.servicehi.service.MyRedisService;
 
+import java.util.Map;
+
 /**
  * 开发公司：青岛上朝信息科技有限公司
  * 版权：青岛上朝信息科技有限公司
@@ -23,17 +25,17 @@ public class MyRedisController {
     MyRedisService myRedisService;
 
     @PostMapping("/testRedisLock")
-    public void testRedisLock(){
-        myRedisService.deleteConcurrentLock("lock");
+    public void testRedisLock(@RequestBody Map map){
+        String key = map.get("id").toString();
         new Thread(){
             public void run(){
                 try {
-                    Boolean result = myRedisService.setConcurrentLock("lock",1l);
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
-                        System.out.println("线程一抢单成功");
-                        myRedisService.deleteConcurrentLock("lock");
+                        System.out.println("线程一抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
                     }else {
-                        System.out.println("线程一抢单失败");
+                        System.out.println("线程一抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -43,13 +45,12 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
-                    Boolean result = myRedisService.setConcurrentLock("lock",1l);
-                    myRedisService.deleteConcurrentLock("lock");
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
-                        System.out.println("线程二抢单成功");
-                        myRedisService.deleteConcurrentLock("lock");
+                        System.out.println("线程二抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
                     }else {
-                        System.out.println("线程二抢单失败");
+                        System.out.println("线程二抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -59,13 +60,12 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
-                    Boolean result = myRedisService.setConcurrentLock("lock",1l);
-                    myRedisService.deleteConcurrentLock("lock");
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
-                        System.out.println("线程三抢单成功");
-                        myRedisService.deleteConcurrentLock("lock");
+                        System.out.println("线程三抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
                     }else {
-                        System.out.println("线程三抢单失败");
+                        System.out.println("线程三抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -75,13 +75,12 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
-                    Boolean result = myRedisService.setConcurrentLock("lock",1l);
-                    myRedisService.deleteConcurrentLock("lock");
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
-                        System.out.println("线程四抢单成功");
-                        myRedisService.deleteConcurrentLock("lock");
+                        System.out.println("线程四抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
                     }else {
-                        System.out.println("线程四抢单失败");
+                        System.out.println("线程四抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -91,13 +90,12 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
-                    Boolean result = myRedisService.setConcurrentLock("lock",1l);
-                    myRedisService.deleteConcurrentLock("lock");
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
-                        System.out.println("线程五抢单成功");
-                        myRedisService.deleteConcurrentLock("lock");
+                        System.out.println("线程五抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
                     }else {
-                        System.out.println("线程五抢单失败");
+                        System.out.println("线程五抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
