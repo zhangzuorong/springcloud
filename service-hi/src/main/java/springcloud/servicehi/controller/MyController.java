@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import springcloud.servicehi.core.redis.IRedisService;
+
+import java.util.Map;
 
 /**
  * 开发公司：青岛上朝信息科技有限公司
@@ -23,6 +23,8 @@ import org.springframework.web.client.RestTemplate;
 public class MyController {
     @Autowired
     RestTemplate restTemplate;
+    @Autowired
+    IRedisService iRedisService;
 
     private static Logger log = LoggerFactory.getLogger(MyController.class);
     @Value("${server.port}")
@@ -45,5 +47,21 @@ public class MyController {
         log.info("miya过来访问hi了 ");
         return "miya过来访问hi了";
 
+    }
+
+    @PostMapping("/mySetRedis")
+    public String mySetRedis(@RequestBody Map map){
+        Boolean result = iRedisService.set("name", map.get("name").toString());
+        iRedisService.expire("name", 3600);
+        if(result){
+            return "插入成功";
+        }
+        return "插入失败";
+    }
+
+    @PostMapping("/getMyRedis")
+    public String getMyRedis(){
+        String result = iRedisService.get("name");
+        return "my name is:"+result;
     }
 }
