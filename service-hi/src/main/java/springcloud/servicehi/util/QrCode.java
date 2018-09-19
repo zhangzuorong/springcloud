@@ -52,10 +52,10 @@ public class QrCode {
         String pathI = contentType.getPath();
         Path path = null;
         try {
-            if(!Files.exists(Paths.get(pathI + dirName))){
-                Files.createDirectories(Paths.get(pathI + dirName));
+            if(!Files.exists(Paths.get(pathI + dirName))){//判断文件是否存在
+                Files.createDirectories(Paths.get(pathI + dirName));//创建目录
             }
-            path = Files.createFile(Paths.get(pathI + dirName + "/" + filePathName));
+            path = Files.createFile(Paths.get(pathI + dirName + "/" + filePathName));//创建文件
         } catch (IOException e) {
             e.printStackTrace();
         }
