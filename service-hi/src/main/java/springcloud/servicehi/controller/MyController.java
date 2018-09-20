@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import springcloud.servicehi.core.redis.IRedisService;
 
 import java.util.Map;
@@ -64,5 +66,11 @@ public class MyController {
     public String getMyRedis(){
         String result = iRedisService.get("name");
         return "my name is:"+result;
+    }
+
+
+    @RequestMapping(value = "/getVisitorSucess")
+    public ModelAndView getVisitorSucess(ModelMap modelMap){
+        return new ModelAndView("/visitor_sucess",modelMap);
     }
 }

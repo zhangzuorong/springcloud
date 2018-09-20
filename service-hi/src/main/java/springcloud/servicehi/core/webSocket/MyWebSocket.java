@@ -1,13 +1,14 @@
 package springcloud.servicehi.core.webSocket;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArraySet;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 开发公司：青岛上朝信息科技有限公司
@@ -18,89 +19,90 @@ import org.springframework.web.bind.annotation.RestController;
  * @author zhangzuorong
  * @created 2018/9/10.
  */
-@ServerEndpoint("/webSocket")
-@Component
 @RestController
+@ServerEndpoint(value = "/websocket")
 public class MyWebSocket {
-    private static final Logger logger = LogManager.getLogger(MyWebSocket.class.getName());
-    //静态变量，用来记录当前在线连接数
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(MyWebSocket.class);
+    //统计在线人数
     private static int onlineCount = 0;
 
-    //concurrent包的线程安全set,用来存放每个客户端对应的MyWebSocket对象，若要实现服务端与单一客户端通信的
-    private static CopyOnWriteArraySet<MyWebSocket> webSockets = new CopyOnWriteArraySet<MyWebSocket>();
+    //用本地线程保存session
+    private static ThreadLocal<Session> sessions = new ThreadLocal<Session>();
 
-    //与某个客户端的链接会话，需要通过它来给客户端发送数据
-    private Session session;
+    //保存所有连接上的session
+    private static Map<String, Session> sessionMap = new ConcurrentHashMap<String, Session>();
 
-    /**
-     * 链接成功调用的方法
-     * @param session
-     */
-    @OnOpen
-    public void onOpen(Session session){
-        this.session = session;
-        webSockets.add(this);
-        addOnlineCount();
-        logger.info("有新连接加入，当前在线人数为"+ getOnlineCount());
-    }
-
-    /**
-     * 链接关闭方法
-     */
-    @OnClose
-    public void onClose(){
-        webSockets.remove(this);
-        subOnlineCount();
-        logger.info("有新连接关闭，当前在线人数为"+ getOnlineCount());
-    }
-
-    /**
-     * 收到客户端消息后调用的方法
-     * @param message
-     * @param session
-     */
-    @OnMessage
-    public void onMessage(String message,Session session){
-        String serverMsg = "你好，小程序！";
-        logger.info("来自客户端的消息："+message);
-        //群发消息
-        for(MyWebSocket my : webSockets){
-            try{
-                my.sendMessage(serverMsg);
-            }catch (Exception e){
-                continue;
-            }
-        }
-    }
-
-    /**
-     * 发生错误时调用
-     * @param session
-     * @param error
-     */
-    @OnError
-    public void onError(Session session,Throwable error){
-        logger.info("MyWebsocket出错了");
-        error.printStackTrace();
-    }
-
-    /**
-     * onMessage调用的方法
-     */
-    public void sendMessage(String message) throws IOException{
-        this.session.getBasicRemote().sendText(message);
-    }
-
-    public static synchronized int getOnlineCount(){
+    public static synchronized int getOnlineCount() {
         return onlineCount;
     }
 
-    public static synchronized void addOnlineCount(){
-        MyWebSocket.onlineCount++;
+    public static synchronized void addOnlineCount() {
+        onlineCount++;
     }
 
-    public static synchronized void subOnlineCount(){
-        MyWebSocket.onlineCount--;
+    public static synchronized void subOnlineCount() {
+        onlineCount--;
+    }
+
+    //连接
+    @OnOpen
+    public void onOpen(Session session) {
+        sessions.set(session);
+        addOnlineCount();
+        sessionMap.put(session.getId(), session);
+        log.info("【" + session.getId() + "】连接上服务器======当前在线人数【" + getOnlineCount() + "】");
+        //连接上后给客户端一个消息
+        sendMsg(session, "连接服务器成功！");
+    }
+
+    //关闭
+    @OnClose
+    public void onClose(Session session) {
+        subOnlineCount();
+        sessionMap.remove(session.getId());
+        log.info("【" + session.getId() + "】退出了连接======当前在线人数【" + getOnlineCount() + "】");
+    }
+
+    //接收消息   客户端发送过来的消息
+    @OnMessage
+    public void onMessage(String message, Session session) {
+        log.info("【" + session.getId() + "】客户端的发送消息======内容【" + message + "】");
+        String[] split = message.split(",");
+        String sessionId = split[0];
+        Session ss = sessionMap.get(sessionId);
+        if (ss != null) {
+            String msgTo = "【" + session.getId() + "】发送给【客户端】的消息:\n【" + split[1] + "】";
+            String msgMe = "【服务端】发送消息给【"+ss.getId()+"】:\n"+split[1];
+            sendMsg(ss, msgTo);
+            sendMsg(session,msgMe);
+        }else {
+            for (Session s : sessionMap.values()) {
+                if (!s.getId().equals(session.getId())) {
+                    sendMsg(s, "【" + session.getId() + "】发送给【客户端】的广播消息:\n【" + message + "】");
+                } else {
+                    sendMsg(session,"【服务端】发送广播消息给大家\n"+message);
+                }
+            }
+        }
+
+    }
+
+    //异常
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        log.info("发生异常!");
+        throwable.printStackTrace();
+    }
+
+
+
+    //统一的发送消息方法
+    public synchronized void sendMsg(Session session, String msg) {
+        try {
+            session.getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

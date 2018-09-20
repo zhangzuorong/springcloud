@@ -6,7 +6,15 @@ spring:
     name: service-hi
   zipkin:
     base-url: http://localhost:9411
-
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
   redis:
     hostName: 192.168.10.34
     port: 6379
