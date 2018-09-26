@@ -5,9 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import springcloud.servicehi.core.redis.IRedisService;
 import springcloud.servicehi.service.MyRedisService;
 
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 开发公司：青岛上朝信息科技有限公司
@@ -23,6 +26,8 @@ import java.util.Map;
 public class MyRedisController {
     @Autowired
     MyRedisService myRedisService;
+    @Autowired
+    IRedisService iRedisService;
 
     @PostMapping("/testRedisLock")
     public void testRedisLock(@RequestBody Map map){
@@ -96,6 +101,21 @@ public class MyRedisController {
                         myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程五抢单失败-----"+"资源"+key);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+        new Thread(){
+            public void run(){
+                try {
+                    Boolean result = myRedisService.setConcurrentLock(key,1l);
+                    if(result){
+                        System.out.println("线程六抢单成功-----"+"资源"+key);
+                        myRedisService.deleteConcurrentLock(key);
+                    }else {
+                        System.out.println("线程六抢单失败-----"+"资源"+key);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -4,7 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import springcloud.servicehi.core.redis.IRedisService;
 import springcloud.servicehi.service.MyRedisService;
+
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -23,9 +30,11 @@ public class myRedisImpl implements MyRedisService {
     @Override
     //http://blog.liuhongnan.com/2017/07/03/Redis的并发控制/
     public Boolean setConcurrentLock(String key, Long expireTime) throws InterruptedException {
+        Boolean result = false;
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        return ops.setIfAbsent(key, "lock");//setIfAbsent  不存在key  则插入  返回true     存在key   返回false
-
+        //setIfAbsent  不存在key  则插入  返回true     存在key   返回false
+        result = ops.setIfAbsent(key, "lock");
+        return result;
     }
 
     @Override
