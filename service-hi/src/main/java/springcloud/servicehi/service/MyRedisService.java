@@ -10,7 +10,7 @@ package springcloud.servicehi.service;
  * @created 2018/9/6.
  */
 public interface MyRedisService {
-    Boolean setConcurrentLock(String key,Long expireTime) throws InterruptedException;
+    Boolean setConcurrentLock(String key, Long expireTime) throws InterruptedException;
 
     void deleteConcurrentLock(String key);
 }
