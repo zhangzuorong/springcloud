@@ -39,9 +39,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程一抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+//                        TimeUnit.MILLISECONDS.sleep(500);
+//                        myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程一抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
@@ -55,9 +56,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程二抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+                        //TimeUnit.MILLISECONDS.sleep(500);
+                        //myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程二抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
@@ -71,9 +73,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程三抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+//                        TimeUnit.MILLISECONDS.sleep(500);
+//                        myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程三抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
@@ -87,9 +90,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程四抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+//                        TimeUnit.MILLISECONDS.sleep(500);
+//                        myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程四抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
@@ -103,9 +107,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程五抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+//                        TimeUnit.MILLISECONDS.sleep(500);
+//                        myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程五抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
@@ -119,9 +124,10 @@ public class MyRedisController {
                 try {
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
+                        iRedisService.expire(key,10);
                         System.out.println("线程六抢单成功-----"+"资源"+key+"时间："+sdf.format(new Date()));
-                        TimeUnit.MILLISECONDS.sleep(500);
-                        myRedisService.deleteConcurrentLock(key);
+//                        TimeUnit.MILLISECONDS.sleep(500);
+//                        myRedisService.deleteConcurrentLock(key);
                     }else {
                         System.out.println("线程六抢单失败-----"+"资源"+key+"时间："+sdf.format(new Date()));
                     }
