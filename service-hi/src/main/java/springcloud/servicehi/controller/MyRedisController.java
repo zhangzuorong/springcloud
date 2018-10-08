@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 开发公司：青岛上朝信息科技有限公司
@@ -30,6 +32,8 @@ public class MyRedisController {
     @Autowired
     IRedisService iRedisService;
 
+    Lock lock = new ReentrantLock();
+
     @PostMapping("/testRedisLock")
     public void testRedisLock(@RequestBody Map map){
         String key = map.get("id").toString();
@@ -37,6 +41,11 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
+                    if(lock.tryLock()){
+                        System.out.println("线程一得到了锁");
+                    }else {
+                        System.out.println("锁被占用");
+                    }
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
                         iRedisService.expire(key,10);
@@ -54,6 +63,11 @@ public class MyRedisController {
         new Thread(){
             public void run(){
                 try {
+                    if(lock.tryLock()){
+                        System.out.println("线程二得到了锁");
+                    }else {
+                        System.out.println("锁被占用");
+                    }
                     Boolean result = myRedisService.setConcurrentLock(key,1l);
                     if(result){
                         iRedisService.expire(key,10);
