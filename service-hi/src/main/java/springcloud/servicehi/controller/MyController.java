@@ -33,7 +33,7 @@ public class MyController {
     String port;
 
     @RequestMapping("/hi")
-    public String home(@RequestParam(value = "name", defaultValue = "forezp") String name) {
+    public String home(@RequestParam(value = "name", defaultValue = "小可耐") String name) {
         String str =  "hi " + name + " ,i am from port:" + port;
         log.info(str);
         return  str;

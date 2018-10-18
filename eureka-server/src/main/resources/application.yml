@@ -1,10 +1,9 @@
-#注册中心  集群化之前
 server:
   port: 8761
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: 192.168.10.44
   client:
     registerWithEureka: false
     fetchRegistry: false
@@ -14,15 +13,3 @@ eureka:
 spring:
   application:
     name: eurka-server
-
-#集群化
-#server:
-#  port: 8761
-#spring:
-#  profiles: peer1
-#eureka:
-#  instance:
-#    hostname: peer1
-#  client:
-#    serviceUrl:
-#      defaultZone: http://peer2:8769/eureka/
