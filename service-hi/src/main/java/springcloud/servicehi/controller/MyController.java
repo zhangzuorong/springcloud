@@ -32,6 +32,9 @@ public class MyController {
     @Value("${server.port}")
     String port;
 
+    /**
+     * dfdsfs
+     */
     @RequestMapping("/hi")
     public String home(@RequestParam(value = "name", defaultValue = "小可耐") String name) {
         String str =  "hi " + name + " ,i am from port:" + port;
