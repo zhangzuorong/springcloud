@@ -1,17 +1,10 @@
-package springcloud.servicehi.service.impl;
+package springcloud.servicehi.service.myRedis.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import springcloud.servicehi.core.redis.IRedisService;
-import springcloud.servicehi.service.MyRedisService;
-
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import springcloud.servicehi.service.myRedis.MyRedisService;
 
 
 /**

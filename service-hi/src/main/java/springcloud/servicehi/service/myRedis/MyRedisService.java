@@ -1,4 +1,4 @@
-package springcloud.servicehi.service;
+package springcloud.servicehi.service.myRedis;
 
 /**
  * 开发公司：青岛上朝信息科技有限公司
